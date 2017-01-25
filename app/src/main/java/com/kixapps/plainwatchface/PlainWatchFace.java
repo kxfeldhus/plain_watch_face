@@ -2,17 +2,16 @@ package com.kixapps.plainwatchface;
 
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Rect;
-import android.graphics.Typeface;
+import android.graphics.*;
 import android.icu.text.SimpleDateFormat;
 import android.icu.util.Calendar;
 import android.os.BatteryManager;
 import android.support.v4.content.ContextCompat;
 import android.support.wearable.watchface.CanvasWatchFaceService;
 import android.support.wearable.watchface.WatchFaceStyle;
+import android.view.Gravity;
 import android.view.SurfaceHolder;
+import android.view.WindowInsets;
 
 import java.util.Date;
 
@@ -23,7 +22,7 @@ public class PlainWatchFace extends CanvasWatchFaceService {
 
     private static final String TIME_FORMAT = "h:mm";
     private static final String DOW_FORMAT = "EEEE";
-    private static final String DATE_FORMAT = "MM-d-yyyy";
+    private static final String DATE_FORMAT = "MM-dd-yyyy";
     private static final int BATTERY_LEVEL_UPDATE_FREQUENCY_SECONDS= 60;
 
     @Override
@@ -48,10 +47,12 @@ public class PlainWatchFace extends CanvasWatchFaceService {
 
             calendar = Calendar.getInstance();
 
+
             setWatchFaceStyle(new WatchFaceStyle.Builder(PlainWatchFace.this)
                     .setCardPeekMode(WatchFaceStyle.PEEK_MODE_SHORT)
                     .setAmbientPeekMode(WatchFaceStyle.AMBIENT_PEEK_MODE_HIDDEN)
                     .setBackgroundVisibility(WatchFaceStyle.BACKGROUND_VISIBILITY_INTERRUPTIVE)
+                    .setStatusBarGravity(Gravity.LEFT | Gravity.TOP)
                     .setShowSystemUiTime(false)
                     .build());
 
@@ -71,6 +72,7 @@ public class PlainWatchFace extends CanvasWatchFaceService {
 
             batteryPaint = new Paint();
             batteryPaint.setColor(ContextCompat.getColor(PlainWatchFace.this, R.color.date_text));
+            batteryPaint.setAntiAlias(true);
             batteryPaint.setStrokeWidth(2);
 
             updateBatteryLevel();
@@ -83,11 +85,20 @@ public class PlainWatchFace extends CanvasWatchFaceService {
             invalidate();
         }
 
+        boolean mIsRound = true;
+
+        @Override
+        public void onApplyWindowInsets(WindowInsets insets) {
+            super.onApplyWindowInsets(insets);
+            mIsRound = insets.isRound();
+        }
+
         @Override
         public void onDraw(Canvas canvas, Rect bounds) {
             calendar.setTimeInMillis(System.currentTimeMillis());
 
             int oneTenth = bounds.height() / 10;
+            float yOffset = (oneTenth * 3 + (oneTenth / 2));
 
             canvas.drawRect(0, 0, bounds.width(), bounds.height(), bgPaint);
 
@@ -101,20 +112,34 @@ public class PlainWatchFace extends CanvasWatchFaceService {
 
             SimpleDateFormat dowFormat = new SimpleDateFormat(DOW_FORMAT);
             String dowText = dowFormat.format(calendar);
-            canvas.drawText(dowText, centerTextX(dowText, datePaint, bounds), bounds.exactCenterY() - (oneTenth * 4), datePaint);
+            canvas.drawText(dowText, centerTextX(dowText, datePaint, bounds), bounds.exactCenterY() - yOffset, datePaint);
 
             SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
             String dateText = dateFormat.format(calendar);
-            canvas.drawText(dateText, centerTextX(dateText, datePaint, bounds), bounds.exactCenterY() + (oneTenth * 4), datePaint);
+            canvas.drawText(dateText, centerTextX(dateText, datePaint, bounds), bounds.exactCenterY() + yOffset, datePaint);
 
             if (shouldUpdateBattery()) {
                 updateBatteryLevel();
             }
-            float batteryLineLength = bounds.width() * batteryPct;
-            canvas.drawLine(bounds.left, bounds.top, batteryLineLength, bounds.top, batteryPaint);
+            if (mIsRound) {
+                Path mPath = new Path();
+                Float startingAngle = 225f;
+                Float batteryLineMaxLength = 90f;
+                Float batteryLineLength = batteryLineMaxLength * batteryPct;
+                mPath.arcTo(bounds.left, bounds.top, bounds.right, bounds.bottom, startingAngle, batteryLineLength, false);
+                batteryPaint.setStrokeCap(Paint.Cap.ROUND);
+                batteryPaint.setStrokeJoin(Paint.Join.ROUND);
+                batteryPaint.setStyle(Paint.Style.STROKE);
+                canvas.drawPath(mPath, batteryPaint);
+            } else {
+                float batteryLineLength = bounds.width() * batteryPct;
+                canvas.drawLine(bounds.left, bounds.top, batteryLineLength, bounds.top, batteryPaint);
+            }
+
+
         }
 
-        private float centerTextX(String text, Paint paint, Rect bounds) {
+       private float centerTextX(String text, Paint paint, Rect bounds) {
             float centerOfText = paint.measureText(text) / 2.0f;
             return bounds.exactCenterX() - centerOfText;
         }
