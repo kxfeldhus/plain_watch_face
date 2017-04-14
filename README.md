@@ -1,1 +1,1 @@
-# plain_watch_face
+# lite_watch_face

@@ -1,4 +1,4 @@
-package com.kixapps.plainwatchface;
+package com.kixapps.litewatchface;
 
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -15,7 +15,7 @@ import android.view.WindowInsets;
 
 import java.util.Date;
 
-public class PlainWatchFace extends CanvasWatchFaceService {
+public class LiteWatchFace extends CanvasWatchFaceService {
 
     private static final Typeface NORMAL_TYPEFACE =
             Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD);
@@ -48,7 +48,7 @@ public class PlainWatchFace extends CanvasWatchFaceService {
             calendar = Calendar.getInstance();
 
 
-            setWatchFaceStyle(new WatchFaceStyle.Builder(PlainWatchFace.this)
+            setWatchFaceStyle(new WatchFaceStyle.Builder(LiteWatchFace.this)
                     .setCardPeekMode(WatchFaceStyle.PEEK_MODE_SHORT)
                     .setAmbientPeekMode(WatchFaceStyle.AMBIENT_PEEK_MODE_HIDDEN)
                     .setBackgroundVisibility(WatchFaceStyle.BACKGROUND_VISIBILITY_INTERRUPTIVE)
@@ -57,21 +57,21 @@ public class PlainWatchFace extends CanvasWatchFaceService {
                     .build());
 
             bgPaint = new Paint();
-            bgPaint.setColor(ContextCompat.getColor(PlainWatchFace.this, R.color.background));
+            bgPaint.setColor(ContextCompat.getColor(LiteWatchFace.this, R.color.background));
 
             timePaint = new Paint();
-            timePaint.setColor(ContextCompat.getColor(PlainWatchFace.this, R.color.time_text));
+            timePaint.setColor(ContextCompat.getColor(LiteWatchFace.this, R.color.time_text));
             timePaint.setTypeface(NORMAL_TYPEFACE);
             timePaint.setAntiAlias(true);
             timePaint.setTextSize(100);
 
             datePaint = new Paint();
-            datePaint.setColor(ContextCompat.getColor(PlainWatchFace.this, R.color.date_text));
+            datePaint.setColor(ContextCompat.getColor(LiteWatchFace.this, R.color.date_text));
             datePaint.setAntiAlias(true);
             datePaint.setTextSize(20);
 
             batteryPaint = new Paint();
-            batteryPaint.setColor(ContextCompat.getColor(PlainWatchFace.this, R.color.date_text));
+            batteryPaint.setColor(ContextCompat.getColor(LiteWatchFace.this, R.color.date_text));
             batteryPaint.setAntiAlias(true);
             batteryPaint.setStrokeWidth(2);
 
@@ -152,7 +152,7 @@ public class PlainWatchFace extends CanvasWatchFaceService {
 
         private void updateBatteryLevel(){
             IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
-            Intent batteryStatus = PlainWatchFace.this.registerReceiver(null, ifilter);
+            Intent batteryStatus = LiteWatchFace.this.registerReceiver(null, ifilter);
             int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
             int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
             batteryPct = level / (float) scale;

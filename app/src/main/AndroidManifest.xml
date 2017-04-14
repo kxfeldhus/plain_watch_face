@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.kixapps.plainwatchface">
+    package="com.kixapps.litewatchface">
 
     <uses-feature android:name="android.hardware.type.watch" />
 
@@ -14,8 +14,8 @@
         android:supportsRtl="true"
         android:theme="@android:style/Theme.DeviceDefault">
         <service
-            android:name=".PlainWatchFace"
-            android:label="Plain WatchFace"
+            android:name="com.kixapps.litewatchface.LiteWatchFace"
+            android:label="Lite"
             android:permission="android.permission.BIND_WALLPAPER">
             <meta-data
                 android:name="android.service.wallpaper"
