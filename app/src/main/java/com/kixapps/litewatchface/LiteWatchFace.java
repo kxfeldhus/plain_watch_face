@@ -163,7 +163,6 @@ public class LiteWatchFace extends CanvasWatchFaceService {
             calendar.setTimeInMillis(now);
 
             int oneTenth = bounds.height() / 10;
-            float yOffset = (oneTenth * 3 + (oneTenth / 2));
 
             canvas.drawRect(0, 0, bounds.width(), bounds.height(), bgPaint);
 
@@ -173,15 +172,15 @@ public class LiteWatchFace extends CanvasWatchFaceService {
             Rect timeBounds = new Rect();
             timePaint.getTextBounds(timeText,0,timeText.length(),timeBounds);
             int middleOfText = timeBounds.height() / 4;
-            canvas.drawText(timeText, centerTextX(timeText, timePaint, bounds), bounds.exactCenterY() + middleOfText, timePaint);
+            canvas.drawText(timeText, centerTextX(timeText, timePaint, bounds), bounds.exactCenterY() - 30 + middleOfText, timePaint);
 
             SimpleDateFormat dowFormat = new SimpleDateFormat(DOW_FORMAT);
             String dowText = dowFormat.format(calendar);
-            canvas.drawText(dowText, centerTextX(dowText, datePaint, bounds), bounds.exactCenterY() - yOffset, datePaint);
+            canvas.drawText(dowText, centerTextX(dowText, datePaint, bounds), bounds.exactCenterY() - 40 - (oneTenth * 2), datePaint);
 
             SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
             String dateText = dateFormat.format(calendar);
-            canvas.drawText(dateText, centerTextX(dateText, datePaint, bounds), bounds.exactCenterY() + yOffset, datePaint);
+            canvas.drawText(dateText, centerTextX(dateText, datePaint, bounds), bounds.exactCenterY() - 10 + oneTenth, datePaint);
 
             if (shouldUpdateBattery()) {
                 updateBatteryLevel();
